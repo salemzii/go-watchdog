@@ -42,11 +42,11 @@ func (db *Database) GetDbDriver() {
 	case "postgresql":
 		// call db driver
 	case "sqlite":
-		// call db driver
+		MakeSqliteQueryCheck(db)
 	case "oracle":
 		// call db driver
 	case "mongodb":
-		// call db driver
+		MakeMongodbQueryCheck(db)
 	case "couchbase":
 		// call db driver
 	case "dynamodb":
@@ -54,4 +54,18 @@ func (db *Database) GetDbDriver() {
 	default:
 		log.Println("Db " + db.Type + " not supported")
 	}
+}
+
+func MakeSqliteQueryCheck(db *Database) map[string]string {
+	status := map[string]string{
+		"status": "ok",
+	}
+	return status
+}
+
+func MakeMongodbQueryCheck(db *Database) map[string]string {
+	status := map[string]string{
+		"status": "ok",
+	}
+	return status
 }
