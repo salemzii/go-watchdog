@@ -26,12 +26,12 @@ type Databases struct {
 }
 
 type Database struct {
-	Type     string        `json:"type"`
-	Name     string        `json:"name"`
-	Username string        `json:"username"`
-	Password string        `json:"password"`
-	Addrs    string        `json:"addrs"`
-	Timeout  time.Duration `json:"timeout"`
+	Type     string `json:"type"`
+	Name     string `json:"name"`
+	Username string `json:"username"`
+	Password string `json:"password"`
+	Addrs    string `json:"addrs"`
+	Timeout  uint   `json:"timeout"`
 }
 
 func (db *Database) GetConnString() (str string, err error) {
@@ -63,27 +63,35 @@ func (db *Database) GetDbSupported() (supported bool, err error) {
 	return false, errors.New("Db " + db.Type + " not supported")
 }
 
-func (db *Database) GetDbDriver() {
+func (db *Database) GetDbDriver() map[string]string {
 
 	switch strings.ToLower(db.Type) {
 
 	case "mysql":
-		MakeMysqlDbQuery(db)
+		status := MakeMysqlDbQuery(db)
+		return status
 	case "postgresql":
-		MakePostgresDbQuery(db)
+		status := MakePostgresDbQuery(db)
+		return status
 	case "sqlite":
-		MakeSqliteQueryCheck(db)
+		status := MakeSqliteQueryCheck(db)
+		return status
 	case "oracle":
-		MakeOracleDbQuery(db)
+		status := MakeOracleDbQuery(db)
+		return status
 	case "mongodb":
-		MakeMongodbQueryCheck(db)
+		status := MakeMongodbQueryCheck(db)
+		return status
 	case "couchbase":
-		MakeCouchDbQueryCheck(db)
+		status := MakeCouchDbQueryCheck(db)
+		return status
 	case "dynamodb":
 		// call db driver
 	default:
-		log.Println("Db " + db.Type + " not supported")
+		log.Fatal("Db " + db.Type + " not supported")
+
 	}
+	return map[string]string{}
 }
 
 // GENERICS
@@ -133,7 +141,7 @@ func MakeSqliteQueryCheck(db *Database) map[string]string {
 func MakeMongodbQueryCheck(db *Database) map[string]string {
 
 	mongoDialInfo := &mgo.DialInfo{Addrs: []string{db.Addrs},
-		Timeout:  db.Timeout,
+		Timeout:  time.Duration(db.Timeout),
 		Database: db.Name,
 		Username: db.Username,
 		Password: db.Password,

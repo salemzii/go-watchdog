@@ -1,16 +1,19 @@
 package main
 
 import (
+	"fmt"
 	"html/template"
 	"log"
 	"net/http"
 	"time"
+
+	"github.com/salemzii/go-watchdog/app"
 )
 
 func main() {
 
 	http.HandleFunc("/orders/", MyOrders)
-
+	fmt.Println(app.AllDbChecks())
 	log.Println("Starting server on port :8000")
 	log.Fatal(http.ListenAndServe(":8000", nil))
 }

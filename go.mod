@@ -7,6 +7,8 @@ require (
 	github.com/go-sql-driver/mysql v1.6.0 // indirect
 	github.com/golang/snappy v0.0.4 // indirect
 	github.com/google/uuid v1.3.0 // indirect
+	github.com/kardianos/osext v0.0.0-20190222173326-2bc1f35cddc0 // indirect
+	github.com/kisielk/godepgraph v0.0.0-20190626013829-57a7e4a651a9 // indirect
 	github.com/lib/pq v1.10.5 // indirect
 	github.com/mattn/go-sqlite3 v1.14.12 // indirect
 	github.com/opentracing/opentracing-go v1.2.0 // indirect

@@ -1,0 +1,12 @@
+{
+    "databases":[
+        {
+            "type": "sqlite3",
+            "name":"testdb",
+            "username": "",
+            "password": "",
+            "addrs":"",
+            "timeout": 10
+        }
+    ]
+}

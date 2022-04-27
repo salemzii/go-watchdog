@@ -10,6 +10,6 @@ type WatchdogConfig struct {
 	// Caches []
 }
 
-func HandleDb() {
-
+func (wConfig *WatchdogConfig) HandleDbChecks() []databases.Database {
+	return wConfig.Databases
 }
