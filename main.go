@@ -16,11 +16,11 @@ func main() {
 	watchDogConfig := utils.WatchdogConfig{
 
 		Databases: []databases.Database{
-			/*
-				{Type: "sqlite3", Name: "test2.db"},
-				{Type: "sqlite3", Name: "test.db"},
-				{Type: "mongodb", Name: "test", Addrs: "127.0.0.1:27017"},
-			*/
+
+			{Type: "sqlite3", Name: "test2.db"},
+			{Type: "sqlite3", Name: "test.db"},
+			{Type: "mongodb", Name: "taskdb", Addrs: "127.0.0.1:27017"},
+
 			{Type: "mongodb",
 				Addrs: "cluster0.8qw1s.mongodb.net",
 				Name:  "myFirstDatabase", Username: "salem", Password: "auth1234"},

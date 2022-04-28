@@ -1,21 +1,15 @@
 package databases
 
 import (
-	"context"
-	"database/sql"
 	"errors"
 	"fmt"
 	"log"
-	"strconv"
 	"strings"
 	"time"
 
-	"github.com/couchbase/gocb"
 	_ "github.com/go-sql-driver/mysql"
 	_ "github.com/lib/pq"
 	_ "github.com/mattn/go-sqlite3"
-	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 var supportedDbs = map[string][]string{
@@ -59,7 +53,7 @@ func (db *Database) DSNMongoDb() (str string, err error) {
 	if db.Username != "" && db.Password != "" {
 		return fmt.Sprintf("%s+srv://%s:%s@%s/%s?retryWrites=true&w=majority", db.Type, db.Username, db.Password, db.Addrs, db.Name), nil
 	}
-	return fmt.Sprintf("%s://%s", db.Type, db.Addrs), nil
+	return fmt.Sprintf("%s://%s/%s", db.Type, db.Addrs, db.Name), nil
 }
 
 func (db *Database) GetDbSupported() (supported bool, err error) {
@@ -112,9 +106,6 @@ func (db *Database) GetOrSetConnTimeOut() time.Duration {
 	return time.Duration(db.Timeout * uint(time.Second))
 }
 
-// GENERICS
-// Database
-
 func handleDberr(err error) map[string]string {
 	status := map[string]string{
 		"status": "Fail",
@@ -123,230 +114,5 @@ func handleDberr(err error) map[string]string {
 	return status
 }
 
-func MakeSqliteQueryCheck(db *Database) map[string]string {
-
-	sqldb, err := sql.Open("sqlite3", db.Name)
-	if err != nil {
-		status := handleDberr(err)
-		fmt.Println(status)
-		return status
-	}
-
-	defer sqldb.Close()
-	res, err := sqldb.Exec("SELECT 1")
-
-	if err != nil {
-		status := handleDberr(err)
-		fmt.Println(status)
-		return status
-	}
-
-	rows, err := res.RowsAffected()
-	if err != nil {
-		status := handleDberr(err)
-		fmt.Println(status)
-		return status
-	}
-
-	status := map[string]string{
-		"status":        "ok",
-		"rows_affected": strconv.Itoa(int(rows)),
-	}
-	fmt.Println(status)
-	return status
-}
-
-func MakeMongodbQueryCheck(db *Database) map[string]string {
-
-	/*
-		mongoDialInfo := &mgo.DialInfo{Addrs: []string{db.Addrs},
-			Timeout:  db.GetOrSetConnTimeOut(),
-			Database: db.Name,
-			Username: db.Username,
-			Password: db.Password,
-		}
-
-		mongoSession, err := mgo.DialWithInfo(mongoDialInfo)
-		if err != nil {
-			status := handleDberr(err)
-			fmt.Println(status)
-			return status
-		}
-
-	*/
-	uri, err := db.DSNMongoDb()
-	if err != nil {
-		status := handleDberr(err)
-		return status
-	}
-
-	ctx, cancel := context.WithTimeout(context.Background(), 20*time.Second)
-	defer cancel()
-
-	client, err := mongo.Connect(ctx, options.Client().ApplyURI(uri))
-	if err != nil {
-		status := handleDberr(err)
-		return status
-	}
-
-	if err := client.Ping(context.TODO(), nil); err != nil {
-		status := handleDberr(err)
-		return status
-	}
-
-	status := map[string]string{
-		"status": "ok",
-	}
-	fmt.Println(status)
-	return status
-}
-
-func MakePostgresDbQuery(db *Database) map[string]string {
-	uri, err := db.GetConnString()
-	if err != nil {
-		status := handleDberr(err)
-		fmt.Println(status)
-		return status
-	}
-	postgresDb, err := sql.Open("postgres", uri)
-	if err != nil {
-		status := handleDberr(err)
-		fmt.Println(status)
-		return status
-	}
-
-	res, err := postgresDb.Exec("SELECT 1")
-	if err != nil {
-		status := handleDberr(err)
-		fmt.Println(status)
-		return status
-	}
-
-	rows, err := res.RowsAffected()
-	if err != nil {
-		status := handleDberr(err)
-		fmt.Println(status)
-		return status
-	}
-	status := map[string]string{
-		"status":        "ok",
-		"rows_affected": strconv.Itoa(int(rows)),
-	}
-	return status
-}
-
-// https://blog.logrocket.com/building-simple-app-go-postgresql/
-
-func MakeOracleDbQuery(db *Database) map[string]string {
-	uri, err := db.DSNOracle()
-	if err != nil {
-		status := handleDberr(err)
-		fmt.Println(status)
-		return status
-	}
-	Oracledb, err := sql.Open("godror", uri)
-	if err != nil {
-		status := handleDberr(err)
-		fmt.Println(status)
-		return status
-	}
-	defer Oracledb.Close()
-
-	res, err := Oracledb.Exec("SELECT 1")
-	if err != nil {
-		status := handleDberr(err)
-		fmt.Println(status)
-		return status
-	}
-
-	rows, err := res.RowsAffected()
-	if err != nil {
-		status := handleDberr(err)
-		fmt.Println(status)
-		return status
-	}
-	status := map[string]string{
-		"status":        "ok",
-		"rows_affected": strconv.Itoa(int(rows)),
-	}
-	fmt.Println(status)
-	return status
-}
-
-//https://blogs.oracle.com/developers/post/how-to-connect-a-go-program-to-oracle-database-using-godror
-
-func MakeMysqlDbQuery(db *Database) map[string]string {
-	uri, err := db.DSNMysql()
-	if err != nil {
-		status := handleDberr(err)
-		fmt.Println(status)
-		return status
-	}
-	Mysqldb, err := sql.Open("mysql", uri)
-	if err != nil {
-		status := handleDberr(err)
-		fmt.Println(status)
-		return status
-	}
-	defer Mysqldb.Close()
-
-	res, err := Mysqldb.Exec("SELECT 1")
-	if err != nil {
-		status := handleDberr(err)
-		fmt.Println(status)
-		return status
-	}
-
-	rows, err := res.RowsAffected()
-	if err != nil {
-		status := handleDberr(err)
-		fmt.Println(status)
-		return status
-	}
-	status := map[string]string{
-		"status":        "ok",
-		"rows_affected": strconv.Itoa(int(rows)),
-	}
-	fmt.Println(status)
-	return status
-}
-
-// https://golangbot.com/connect-create-db-mysql/
-
-func MakeCouchDbQueryCheck(db *Database) map[string]string {
-	uri, err := db.DSNCouchbase()
-
-	if err != nil {
-		status := handleDberr(err)
-		fmt.Println(status)
-		return status
-	}
-
-	cluster, err := gocb.Connect(uri)
-	if err != nil {
-		status := handleDberr(err)
-		fmt.Println(status)
-		return status
-	}
-	bucket, err := cluster.OpenBucket("default", db.Password)
-	if err != nil {
-		status := handleDberr(err)
-		fmt.Println(status)
-		return status
-	}
-
-	r, err := bucket.Ping([]gocb.ServiceType{gocb.N1qlService})
-	if err != nil {
-		status := handleDberr(err)
-		fmt.Println(status)
-		return status
-	}
-
-	fmt.Println(r)
-	status := map[string]string{
-		"status": "ok",
-		"report": "",
-	}
-	fmt.Println(status)
-	return status
-}
+// GENERICS
+// Database
