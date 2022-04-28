@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"html/template"
-	"log"
 	"net/http"
 	"time"
 
@@ -17,17 +16,27 @@ func main() {
 	watchDogConfig := utils.WatchdogConfig{
 
 		Databases: []databases.Database{
-			{Type: "sqlite3", Name: "test2.db"},
-			{Type: "mongodb", Name: ""},
+			/*
+				{Type: "sqlite3", Name: "test2.db"},
+				{Type: "sqlite3", Name: "test.db"},
+				{Type: "mongodb", Name: "test", Addrs: "127.0.0.1:27017"},
+			*/
+			{Type: "mongodb",
+				Addrs: "cluster0.8qw1s.mongodb.net",
+				Name:  "myFirstDatabase", Username: "salem", Password: "auth1234"},
 		},
 	}
 
 	utils.Register(&watchDogConfig)
-
-	http.HandleFunc("/orders/", MyOrders)
 	fmt.Println(app.AllDbChecks())
-	log.Println("Starting server on port :8000")
-	log.Fatal(http.ListenAndServe(":8000", nil))
+
+	/*
+		http.HandleFunc("/orders/", MyOrders)
+		fmt.Println(app.AllDbChecks())
+		log.Println("Starting server on port :8000")
+		log.Fatal(http.ListenAndServe(":8000", nil))
+
+	*/
 }
 
 type Order struct {

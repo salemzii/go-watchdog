@@ -1,6 +1,7 @@
 package databases
 
 import (
+	"context"
 	"database/sql"
 	"errors"
 	"fmt"
@@ -13,7 +14,8 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 	_ "github.com/lib/pq"
 	_ "github.com/mattn/go-sqlite3"
-	"gopkg.in/mgo.v2"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 var supportedDbs = map[string][]string{
@@ -36,6 +38,7 @@ type Database struct {
 
 func (db *Database) GetConnString() (str string, err error) {
 	connStr := fmt.Sprintf("%s://%s:%s@%s/%s?sslmode=disable", db.Type, db.Username, db.Password, db.Addrs, db.Name)
+
 	return connStr, nil
 }
 
@@ -50,6 +53,13 @@ func (db *Database) DSNOracle() (str string, err error) {
 }
 func (db *Database) DSNCouchbase() (str string, err error) {
 	return fmt.Sprintf("couchbase://%s", db.Addrs), nil
+}
+
+func (db *Database) DSNMongoDb() (str string, err error) {
+	if db.Username != "" && db.Password != "" {
+		return fmt.Sprintf("%s+srv://%s:%s@%s/%s?retryWrites=true&w=majority", db.Type, db.Username, db.Password, db.Addrs, db.Name), nil
+	}
+	return fmt.Sprintf("%s://%s", db.Type, db.Addrs), nil
 }
 
 func (db *Database) GetDbSupported() (supported bool, err error) {
@@ -92,6 +102,14 @@ func (db *Database) GetDbDriver() map[string]string {
 
 	}
 	return map[string]string{}
+}
+
+func (db *Database) GetOrSetConnTimeOut() time.Duration {
+	if db.Timeout != 0 {
+		return time.Duration(db.Timeout * uint(time.Second))
+	}
+	db.Timeout = uint(10)
+	return time.Duration(db.Timeout * uint(time.Second))
 }
 
 // GENERICS
@@ -140,25 +158,42 @@ func MakeSqliteQueryCheck(db *Database) map[string]string {
 
 func MakeMongodbQueryCheck(db *Database) map[string]string {
 
-	mongoDialInfo := &mgo.DialInfo{Addrs: []string{db.Addrs},
-		Timeout:  time.Duration(db.Timeout),
-		Database: db.Name,
-		Username: db.Username,
-		Password: db.Password,
+	/*
+		mongoDialInfo := &mgo.DialInfo{Addrs: []string{db.Addrs},
+			Timeout:  db.GetOrSetConnTimeOut(),
+			Database: db.Name,
+			Username: db.Username,
+			Password: db.Password,
+		}
+
+		mongoSession, err := mgo.DialWithInfo(mongoDialInfo)
+		if err != nil {
+			status := handleDberr(err)
+			fmt.Println(status)
+			return status
+		}
+
+	*/
+	uri, err := db.DSNMongoDb()
+	if err != nil {
+		status := handleDberr(err)
+		return status
 	}
 
-	mongoSession, err := mgo.DialWithInfo(mongoDialInfo)
+	ctx, cancel := context.WithTimeout(context.Background(), 20*time.Second)
+	defer cancel()
+
+	client, err := mongo.Connect(ctx, options.Client().ApplyURI(uri))
 	if err != nil {
 		status := handleDberr(err)
-		fmt.Println(status)
 		return status
 	}
-	err = mongoSession.Ping()
-	if err != nil {
+
+	if err := client.Ping(context.TODO(), nil); err != nil {
 		status := handleDberr(err)
-		fmt.Println(status)
 		return status
 	}
+
 	status := map[string]string{
 		"status": "ok",
 	}
