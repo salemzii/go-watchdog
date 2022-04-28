@@ -14,7 +14,7 @@ import (
 
 var supportedDbs = map[string][]string{
 	"sql":   {"mysql", "sqlite", "postgresql", "oracle"},
-	"nosql": {"mongodb", "couchbase", "dynamodb"},
+	"nosql": {"mongodb", "couchbase", "dynamodb", "cockroachDB"},
 }
 
 type Databases struct {
@@ -122,3 +122,4 @@ func handleDberr(err error) map[string]string {
 
 // GENERICS
 // Database
+// connection-pooling

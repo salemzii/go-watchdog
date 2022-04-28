@@ -43,3 +43,4 @@ func MakeOracleDbQuery(db *Database) map[string]string {
 }
 
 //https://blogs.oracle.com/developers/post/how-to-connect-a-go-program-to-oracle-database-using-godror
+//https://medium.com/venturenxt/install-oracle-database-12c-on-ubuntu-16-04-c081d51c0f9d

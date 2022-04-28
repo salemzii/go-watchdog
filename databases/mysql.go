@@ -13,6 +13,11 @@ func MakeMysqlDbQuery(db *Database) map[string]string {
 		fmt.Println(status)
 		return status
 	}
+
+	if db.Uri_Only() {
+		uri = db.UriOnly
+	}
+
 	Mysqldb, err := sql.Open("mysql", uri)
 	if err != nil {
 		status := handleDberr(err)

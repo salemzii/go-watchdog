@@ -3,7 +3,7 @@ package databases
 import (
 	"fmt"
 
-	"github.com/couchbase/gocb"
+	"github.com/couchbase/gocb/v2"
 )
 
 func MakeCouchDbQueryCheck(db *Database) map[string]string {
@@ -15,30 +15,28 @@ func MakeCouchDbQueryCheck(db *Database) map[string]string {
 		return status
 	}
 
-	cluster, err := gocb.Connect(uri)
+	cluster, err := gocb.Connect(uri, gocb.ClusterOptions{
+		Authenticator: gocb.PasswordAuthenticator{
+			Username: db.Username,
+			Password: db.Password,
+		},
+		SecurityConfig: gocb.SecurityConfig{
+			TLSSkipVerify: true,
+		},
+	})
 	if err != nil {
 		status := handleDberr(err)
 		fmt.Println(status)
 		return status
 	}
-	bucket, err := cluster.OpenBucket("default", db.Password)
-	if err != nil {
-		status := handleDberr(err)
-		fmt.Println(status)
-		return status
-	}
+	bucket := cluster.Bucket("default")
 
-	r, err := bucket.Ping([]gocb.ServiceType{gocb.N1qlService})
-	if err != nil {
-		status := handleDberr(err)
-		fmt.Println(status)
-		return status
-	}
+	r := bucket.Name()
 
 	fmt.Println(r)
 	status := map[string]string{
 		"status": "ok",
-		"report": "",
+		"report": r,
 	}
 	fmt.Println(status)
 	return status
