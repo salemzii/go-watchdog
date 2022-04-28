@@ -15,6 +15,9 @@ func MakeMongodbQueryCheck(db *Database) map[string]string {
 		status := handleDberr(err)
 		return status
 	}
+	if db.Uri_Only() {
+		uri = db.UriOnly
+	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), db.GetOrSetConnTimeOut())
 	defer cancel()

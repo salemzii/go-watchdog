@@ -13,6 +13,11 @@ func MakePostgresDbQuery(db *Database) map[string]string {
 		fmt.Println(status)
 		return status
 	}
+
+	if db.Uri_Only() {
+		uri = db.UriOnly
+	}
+
 	postgresDb, err := sql.Open("postgres", uri)
 	if err != nil {
 		status := handleDberr(err)

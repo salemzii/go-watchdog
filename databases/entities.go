@@ -28,6 +28,12 @@ type Database struct {
 	Password string `json:"password"`
 	Addrs    string `json:"addrs"`
 	Timeout  uint   `json:"timeout"`
+	UriOnly  string `json:"uri_only"` // when db credentials are already preconfigured to a single address/URL
+	Uri      string `json:"uri"`      // similar to UriOnly but without the password/auth info to the authenticate the uri
+}
+
+func (db *Database) Uri_Only() bool {
+	return db.UriOnly != ""
 }
 
 func (db *Database) GetConnString() (str string, err error) {
