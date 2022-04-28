@@ -8,9 +8,21 @@ import (
 	"time"
 
 	"github.com/salemzii/go-watchdog/app"
+	"github.com/salemzii/go-watchdog/databases"
+	"github.com/salemzii/go-watchdog/utils"
 )
 
 func main() {
+
+	watchDogConfig := utils.WatchdogConfig{
+
+		Databases: []databases.Database{
+			{Type: "sqlite3", Name: "test2.db"},
+			{Type: "mongodb", Name: ""},
+		},
+	}
+
+	utils.Register(&watchDogConfig)
 
 	http.HandleFunc("/orders/", MyOrders)
 	fmt.Println(app.AllDbChecks())

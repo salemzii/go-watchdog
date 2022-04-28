@@ -13,3 +13,7 @@ type WatchdogConfig struct {
 func (wConfig *WatchdogConfig) HandleDbChecks() []databases.Database {
 	return wConfig.Databases
 }
+
+func Register(conf *WatchdogConfig) {
+	Config = *conf
+}

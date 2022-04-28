@@ -73,7 +73,7 @@ func (db *Database) GetDbDriver() map[string]string {
 	case "postgresql":
 		status := MakePostgresDbQuery(db)
 		return status
-	case "sqlite":
+	case "sqlite3":
 		status := MakeSqliteQueryCheck(db)
 		return status
 	case "oracle":

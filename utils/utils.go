@@ -1,21 +1,11 @@
 package utils
 
-import (
-	"encoding/json"
-	"fmt"
-	"io/ioutil"
-	"log"
-	"os"
-	"path/filepath"
-
-	"github.com/kardianos/osext"
-)
-
 var Config WatchdogConfig
 
 // go build -v *.go && ./main
 // sudo systemctl start mongod
 
+/*
 func init() {
 	folderPath, err := osext.ExecutableFolder()
 	if err != nil {
@@ -37,6 +27,7 @@ func init() {
 	json.Unmarshal(configByte, &Config)
 	fmt.Println(Config)
 }
+*/
 
 func GetDatabaseChecks() (checks []map[string]string, err error) {
 	arg := Config.Databases
