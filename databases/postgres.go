@@ -41,3 +41,4 @@ func MakePostgresDbQuery(db *Database) map[string]string {
 }
 
 // https://blog.logrocket.com/building-simple-app-go-postgresql/
+// https://stackoverflow.com/questions/10845998/i-forgot-the-password-i-entered-during-postgres-installation

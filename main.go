@@ -20,10 +20,13 @@ func main() {
 			{Type: "sqlite3", Name: "test2.db"},
 			{Type: "sqlite3", Name: "test.db"},
 			{Type: "mongodb", Name: "taskdb", Addrs: "127.0.0.1:27017"},
+			{Type: "postgresql", Name: "postgres", Addrs: "localhost", Username: "postgres", Password: "auth1234"},
 
-			{Type: "mongodb",
-				Addrs: "cluster0.8qw1s.mongodb.net",
-				Name:  "myFirstDatabase", Username: "salem", Password: "auth1234"},
+			/*
+				{Type: "mongodb",
+					Addrs: "cluster0.8qw1s.mongodb.net",
+					Name:  "myFirstDatabase", Username: "salem", Password: "auth1234"},
+			*/
 		},
 	}
 
