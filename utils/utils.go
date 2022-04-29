@@ -38,3 +38,14 @@ func GetDatabaseChecks() (checks []map[string]string, err error) {
 	}
 	return allDbChecks, nil
 }
+
+func GetCacheChecks() (checks []map[string]string, err error) {
+	arg := Config.Caches
+	allCacheChecks := []map[string]string{}
+
+	for i := 0; i < len(arg); i++ {
+		status := arg[i].GetCacheDriver()
+		allCacheChecks = append(allCacheChecks, status)
+	}
+	return allCacheChecks, nil
+}

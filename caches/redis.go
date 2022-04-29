@@ -2,7 +2,6 @@ package caches
 
 import (
 	"context"
-	"os"
 	"time"
 
 	cache "github.com/go-redis/cache/v8"
@@ -15,8 +14,8 @@ func MakeRedisCacheCheck(c *Cache) map[string]string {
 
 	rdb := redis.NewClient(&redis.Options{
 		//Addr: "localhost:6379",
-		Addr:     os.Getenv("REDIS_ADDR"),
-		Password: os.Getenv("REDIS_PASSWORD"),
+		Addr:     c.Addrs,    //os.Getenv("REDIS_ADDR"),
+		Password: c.Password, //os.Getenv("REDIS_PASSWORD"),
 	})
 
 	mycache = cache.New(&cache.Options{
@@ -25,7 +24,17 @@ func MakeRedisCacheCheck(c *Cache) map[string]string {
 		LocalCache: cache.NewTinyLFU(1000, time.Minute),
 	})
 
-	return getItem()
+	return ping(rdb)
+}
+
+func ping(rdb *redis.Client) map[string]string {
+	ctx := context.TODO()
+
+	status := rdb.Ping(ctx)
+	if status.Err() != nil {
+		return HandleCacheErr(status.Err())
+	}
+	return map[string]string{status.Name(): status.Val()}
 }
 
 func setItem() map[string]string {
@@ -46,8 +55,9 @@ func getItem() map[string]string {
 	if err := mycache.Get(ctx, "watchdog", map[string]string{}); err != nil {
 		if err == cache.ErrCacheMiss {
 			setItem()
+		} else {
+			HandleCacheErr(err)
 		}
-		HandleCacheErr(err)
 	}
 	return map[string]string{"status": "ok"}
 }

@@ -11,6 +11,7 @@ var supportedCaches = map[string][]string{
 
 type Cache struct {
 	Type     string `json:"type"`
+	Addrs    string `json:"addrs"`
 	UriOnly  string `json:"uri_only"`
 	Name     string `json:"name"`
 	Username string `json:"username"`
@@ -21,12 +22,12 @@ func (cache *Cache) Uri_Only() bool {
 	return cache.UriOnly != ""
 }
 
-func (cache *Cache) GetCacheDriver() {
+func (cache *Cache) GetCacheDriver() map[string]string {
 
 	switch strings.ToLower(cache.Type) {
 
 	case "redis":
-		// Get redis-driver
+		return MakeRedisCacheCheck(cache)
 	case "memcached":
 	// get memcached-driver
 	case "couchbase":
@@ -36,6 +37,7 @@ func (cache *Cache) GetCacheDriver() {
 	default:
 		log.Println("Cache " + cache.Type + " not supported")
 	}
+	return map[string]string{}
 }
 
 func HandleCacheErr(err error) map[string]string {
