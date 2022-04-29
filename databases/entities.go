@@ -114,7 +114,7 @@ func (db *Database) GetOrSetConnTimeOut() time.Duration {
 
 func handleDberr(err error) map[string]string {
 	status := map[string]string{
-		"status": "Fail",
+		"status": "Failed",
 		"error":  err.Error(),
 	}
 	return status
