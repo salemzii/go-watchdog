@@ -32,9 +32,9 @@ func ping(rdb *redis.Client) map[string]string {
 
 	status := rdb.Ping(ctx)
 	if status.Err() != nil {
-		return HandleCacheErr(status.Err())
+		return HandleCacheErr("redis", status.Err())
 	}
-	return map[string]string{status.Name(): status.Val()}
+	return map[string]string{status.Name(): status.Val(), "status": "ok", "service": "redis"}
 }
 
 func setItem() map[string]string {
@@ -45,7 +45,7 @@ func setItem() map[string]string {
 		Value: "Item Set",
 		TTL:   time.Minute * 5,
 	}); err != nil {
-		HandleCacheErr(err)
+		HandleCacheErr("redis", err)
 	}
 	return map[string]string{"status": "ok"}
 }
@@ -56,7 +56,7 @@ func getItem() map[string]string {
 		if err == cache.ErrCacheMiss {
 			setItem()
 		} else {
-			HandleCacheErr(err)
+			HandleCacheErr("redis", err)
 		}
 	}
 	return map[string]string{"status": "ok"}

@@ -10,7 +10,7 @@ func MakeSqliteQueryCheck(db *Database) map[string]string {
 
 	sqldb, err := sql.Open("sqlite3", db.Name)
 	if err != nil {
-		status := handleDberr(err)
+		status := handleDberr("sqlite3", err)
 		fmt.Println(status)
 		return status
 	}
@@ -19,19 +19,20 @@ func MakeSqliteQueryCheck(db *Database) map[string]string {
 	res, err := sqldb.Exec("SELECT 1")
 
 	if err != nil {
-		status := handleDberr(err)
+		status := handleDberr("sqlite3", err)
 		fmt.Println(status)
 		return status
 	}
 
 	rows, err := res.RowsAffected()
 	if err != nil {
-		status := handleDberr(err)
+		status := handleDberr("sqlite3", err)
 		fmt.Println(status)
 		return status
 	}
 
 	status := map[string]string{
+		"service":       "sqlite3",
 		"status":        "ok",
 		"rows_affected": strconv.Itoa(int(rows)),
 	}

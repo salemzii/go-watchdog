@@ -3,6 +3,7 @@ module github.com/salemzii/go-watchdog
 go 1.18
 
 require (
+	github.com/bradfitz/gomemcache v0.0.0-20220106215444-fb4bf637b56d // indirect
 	github.com/cespare/xxhash/v2 v2.1.2 // indirect
 	github.com/couchbase/gocb v1.6.7 // indirect
 	github.com/couchbase/gocb/v2 v2.5.0 // indirect

@@ -112,10 +112,11 @@ func (db *Database) GetOrSetConnTimeOut() time.Duration {
 	return time.Duration(db.Timeout * uint(time.Second))
 }
 
-func handleDberr(err error) map[string]string {
+func handleDberr(service string, err error) map[string]string {
 	status := map[string]string{
-		"status": "Failed",
-		"error":  err.Error(),
+		"status":  "Failed",
+		"error":   err.Error(),
+		"service": service,
 	}
 	return status
 }

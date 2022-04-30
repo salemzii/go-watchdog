@@ -9,13 +9,13 @@ import (
 func MakeOracleDbQuery(db *Database) map[string]string {
 	uri, err := db.DSNOracle()
 	if err != nil {
-		status := handleDberr(err)
+		status := handleDberr("oracle", err)
 		fmt.Println(status)
 		return status
 	}
 	Oracledb, err := sql.Open("godror", uri)
 	if err != nil {
-		status := handleDberr(err)
+		status := handleDberr("oracle", err)
 		fmt.Println(status)
 		return status
 	}
@@ -23,18 +23,19 @@ func MakeOracleDbQuery(db *Database) map[string]string {
 
 	res, err := Oracledb.Exec("SELECT 1")
 	if err != nil {
-		status := handleDberr(err)
+		status := handleDberr("oracle", err)
 		fmt.Println(status)
 		return status
 	}
 
 	rows, err := res.RowsAffected()
 	if err != nil {
-		status := handleDberr(err)
+		status := handleDberr("oracle", err)
 		fmt.Println(status)
 		return status
 	}
 	status := map[string]string{
+		"service":       "oracle",
 		"status":        "ok",
 		"rows_affected": strconv.Itoa(int(rows)),
 	}

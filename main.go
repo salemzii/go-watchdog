@@ -42,6 +42,7 @@ func main() {
 		},
 
 		Caches: []caches.Cache{
+			{Type: "memcached", Addrs: "localhost:11211"},
 			{Type: "redis", Addrs: "127.0.0.1:6379"},
 			{Type: "redis", Addrs: "redis-15719.c242.eu-west-1-2.ec2.cloud.redislabs.com:15719", Password: "38rKjb8yOD7YI2OodiAoFdrMZQTIBIYl"},
 		},

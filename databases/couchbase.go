@@ -10,7 +10,7 @@ func MakeCouchDbQueryCheck(db *Database) map[string]string {
 	uri, err := db.DSNCouchbase()
 
 	if err != nil {
-		status := handleDberr(err)
+		status := handleDberr("couchbase", err)
 		fmt.Println(status)
 		return status
 	}
@@ -25,7 +25,7 @@ func MakeCouchDbQueryCheck(db *Database) map[string]string {
 		},
 	})
 	if err != nil {
-		status := handleDberr(err)
+		status := handleDberr("couchbase", err)
 		fmt.Println(status)
 		return status
 	}
@@ -35,8 +35,9 @@ func MakeCouchDbQueryCheck(db *Database) map[string]string {
 
 	fmt.Println(r)
 	status := map[string]string{
-		"status": "ok",
-		"report": r,
+		"service": "couchbase",
+		"status":  "ok",
+		"report":  r,
 	}
 	fmt.Println(status)
 	return status

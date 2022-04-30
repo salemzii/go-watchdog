@@ -29,7 +29,7 @@ func (cache *Cache) GetCacheDriver() map[string]string {
 	case "redis":
 		return MakeRedisCacheCheck(cache)
 	case "memcached":
-	// get memcached-driver
+		return MakeMemcachedCheck(cache)
 	case "couchbase":
 		// get couchbase-driver
 	case "varnish":
@@ -40,10 +40,11 @@ func (cache *Cache) GetCacheDriver() map[string]string {
 	return map[string]string{}
 }
 
-func HandleCacheErr(err error) map[string]string {
+func HandleCacheErr(service string, err error) map[string]string {
 	status := map[string]string{
-		"status": "Failed",
-		"error":  err.Error(),
+		"status":  "Failed",
+		"error":   err.Error(),
+		"service": service,
 	}
 	return status
 }

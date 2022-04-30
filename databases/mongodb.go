@@ -12,7 +12,7 @@ func MakeMongodbQueryCheck(db *Database) map[string]string {
 
 	uri, err := db.DSNMongoDb()
 	if err != nil {
-		status := handleDberr(err)
+		status := handleDberr("mongodb", err)
 		return status
 	}
 	if db.Uri_Only() {
@@ -24,12 +24,12 @@ func MakeMongodbQueryCheck(db *Database) map[string]string {
 
 	client, err := mongo.Connect(ctx, options.Client().ApplyURI(uri))
 	if err != nil {
-		status := handleDberr(err)
+		status := handleDberr("mongodb", err)
 		return status
 	}
 
 	if err := client.Ping(context.TODO(), nil); err != nil {
-		status := handleDberr(err)
+		status := handleDberr("mongodb", err)
 		return status
 	}
 

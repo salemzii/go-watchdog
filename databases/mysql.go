@@ -9,7 +9,7 @@ import (
 func MakeMysqlDbQuery(db *Database) map[string]string {
 	uri, err := db.DSNMysql()
 	if err != nil {
-		status := handleDberr(err)
+		status := handleDberr("mysql", err)
 		fmt.Println(status)
 		return status
 	}
@@ -20,7 +20,7 @@ func MakeMysqlDbQuery(db *Database) map[string]string {
 
 	Mysqldb, err := sql.Open("mysql", uri)
 	if err != nil {
-		status := handleDberr(err)
+		status := handleDberr("mysql", err)
 		fmt.Println(status)
 		return status
 	}
@@ -28,18 +28,19 @@ func MakeMysqlDbQuery(db *Database) map[string]string {
 
 	res, err := Mysqldb.Exec("SELECT 1")
 	if err != nil {
-		status := handleDberr(err)
+		status := handleDberr("mysql", err)
 		fmt.Println(status)
 		return status
 	}
 
 	rows, err := res.RowsAffected()
 	if err != nil {
-		status := handleDberr(err)
+		status := handleDberr("mysql", err)
 		fmt.Println(status)
 		return status
 	}
 	status := map[string]string{
+		"service":       "mysql",
 		"status":        "ok",
 		"rows_affected": strconv.Itoa(int(rows)),
 	}
