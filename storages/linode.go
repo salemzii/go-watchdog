@@ -11,7 +11,7 @@ import (
 	"golang.org/x/oauth2"
 )
 
-func init() {
+func start() {
 	apiKey, ok := os.LookupEnv("LINODE_TOKEN")
 	if !ok {
 		log.Fatal("Could not find LINODE_TOKEN, please assert it is set.")

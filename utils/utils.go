@@ -49,3 +49,14 @@ func GetCacheChecks() (checks []map[string]string, err error) {
 	}
 	return allCacheChecks, nil
 }
+
+func GetStorageChecks() (checks []map[string]string, err error) {
+	arg := Config.Storages
+	allCacheChecks := []map[string]string{}
+
+	for i := 0; i < len(arg); i++ {
+		status := arg[i].GetStorageDriver()
+		allCacheChecks = append(allCacheChecks, status)
+	}
+	return allCacheChecks, nil
+}

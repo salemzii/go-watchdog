@@ -16,6 +16,7 @@ var s3sess *s3.S3
 var sesss *session.Session
 var REGION, BUCKET string
 
+/*
 func init() {
 
 	rand.Seed(time.Now().UnixNano())
@@ -38,7 +39,7 @@ func init() {
 	s3sess = s3.New(sesss)
 
 }
-
+*/
 func create_file() (file os.File, name string, err error) {
 	f, err := os.OpenFile("out.txt", os.O_TRUNC|os.O_CREATE|os.O_WRONLY, 0600)
 	if err != nil {
@@ -47,19 +48,38 @@ func create_file() (file os.File, name string, err error) {
 	for _, v := range "AP" {
 		fmt.Fprintf(f, "%b\n", v)
 	}
-	defer f.Close()
+
 	return *f, f.Name(), nil
 }
 
 // function to upload file to s3
 func AwsStorageCheck(st *Storage) map[string]string {
 
+	rand.Seed(time.Now().UnixNano())
+
+	REGION = st.Region
+	BUCKET := st.BUCKET
+	fmt.Println(REGION, BUCKET)
+
+	// start aws sessions
+	sesss := session.Must(session.NewSession(&aws.Config{
+		Region: aws.String(REGION),
+	}))
+
+	// Setup the S3 Upload Manager. Also see the SDK doc for the Upload Manager
+	// for more information on configuring part size, and concurrency.
+	//
+	// http://docs.aws.amazon.com/sdk-for-go/api/service/s3/s3manager/#NewUploader
+
+	// initiate s3 with created session object
+	s3sess = s3.New(sesss)
+
 	file, filename, err := create_file()
 
 	if err != nil {
 		return map[string]string{"status": "Fail", "service": "aws", "error": err.Error()}
 	}
-
+	defer file.Close()
 	uploader := s3manager.NewUploader(sesss)
 	_, err = uploader.Upload(&s3manager.UploadInput{
 		Bucket: aws.String(st.BUCKET),
