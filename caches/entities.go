@@ -9,6 +9,8 @@ var supportedCaches = map[string][]string{
 	"cache": {"redis", "memcache", "couchbase", ""},
 }
 
+//https://developer20.com/garnish-simple-varnish-in-go/
+
 type Cache struct {
 	Type     string `json:"type"`
 	Addrs    string `json:"addrs"`
