@@ -6,11 +6,12 @@ import (
 
 	cache "github.com/go-redis/cache/v8"
 	"github.com/go-redis/redis/v8"
+	"github.com/salemzii/go-watchdog/service"
 )
 
 var mycache *cache.Cache
 
-func MakeRedisCacheCheck(c *Cache) map[string]string {
+func MakeRedisCacheCheck(c *Cache) service.ServiceCheck {
 
 	rdb := redis.NewClient(&redis.Options{
 		//Addr: "localhost:6379",
@@ -27,14 +28,14 @@ func MakeRedisCacheCheck(c *Cache) map[string]string {
 	return ping(rdb)
 }
 
-func ping(rdb *redis.Client) map[string]string {
+func ping(rdb *redis.Client) service.ServiceCheck {
 	ctx := context.TODO()
 
 	status := rdb.Ping(ctx)
 	if status.Err() != nil {
-		return HandleCacheErr("redis", status.Err())
+		return service.HandleError("redis", status.Err())
 	}
-	return map[string]string{status.Name(): status.Val(), "status": "ok", "service": "redis"}
+	return service.HandleSuccess("redis", nil)
 }
 
 func setItem() map[string]string {

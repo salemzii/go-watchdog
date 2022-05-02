@@ -1,18 +1,17 @@
 package databases
 
 import (
-	"fmt"
+	"log"
 
 	"github.com/couchbase/gocb/v2"
+	"github.com/salemzii/go-watchdog/service"
 )
 
-func MakeCouchDbQueryCheck(db *Database) map[string]string {
+func MakeCouchDbQueryCheck(db *Database) service.ServiceCheck {
 	uri, err := db.DSNCouchbase()
 
 	if err != nil {
-		status := handleDberr("couchbase", err)
-		fmt.Println(status)
-		return status
+		return service.HandleError("couchbase", err)
 	}
 
 	cluster, err := gocb.Connect(uri, gocb.ClusterOptions{
@@ -25,20 +24,12 @@ func MakeCouchDbQueryCheck(db *Database) map[string]string {
 		},
 	})
 	if err != nil {
-		status := handleDberr("couchbase", err)
-		fmt.Println(status)
-		return status
+		return service.HandleError("couchbase", err)
 	}
 	bucket := cluster.Bucket("default")
 
 	r := bucket.Name()
 
-	fmt.Println(r)
-	status := map[string]string{
-		"service": "couchbase",
-		"status":  "ok",
-		"report":  r,
-	}
-	fmt.Println(status)
-	return status
+	log.Println(r)
+	return service.HandleSuccess("couchbase", nil)
 }

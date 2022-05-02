@@ -3,6 +3,8 @@ package caches
 import (
 	"log"
 	"strings"
+
+	"github.com/salemzii/go-watchdog/service"
 )
 
 var supportedCaches = map[string][]string{
@@ -24,7 +26,7 @@ func (cache *Cache) Uri_Only() bool {
 	return cache.UriOnly != ""
 }
 
-func (cache *Cache) GetCacheDriver() map[string]string {
+func (cache *Cache) GetCacheDriver() service.ServiceCheck {
 
 	switch strings.ToLower(cache.Type) {
 
@@ -39,7 +41,7 @@ func (cache *Cache) GetCacheDriver() map[string]string {
 	default:
 		log.Println("Cache " + cache.Type + " not supported")
 	}
-	return map[string]string{}
+	return service.ServiceCheck{}
 }
 
 func HandleCacheErr(service string, err error) map[string]string {

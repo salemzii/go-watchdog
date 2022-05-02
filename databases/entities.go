@@ -10,6 +10,7 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 	_ "github.com/lib/pq"
 	_ "github.com/mattn/go-sqlite3"
+	"github.com/salemzii/go-watchdog/service"
 )
 
 var supportedDbs = map[string][]string{
@@ -73,35 +74,29 @@ func (db *Database) GetDbSupported() (supported bool, err error) {
 	return false, errors.New("Db " + db.Type + " not supported")
 }
 
-func (db *Database) GetDbDriver() map[string]string {
+func (db *Database) GetDbDriver() service.ServiceCheck {
 
 	switch strings.ToLower(db.Type) {
 
 	case "mysql":
-		status := MakeMysqlDbQuery(db)
-		return status
+		return MakeMysqlDbQuery(db)
 	case "postgresql":
-		status := MakePostgresDbQuery(db)
-		return status
+		return MakePostgresDbQuery(db)
 	case "sqlite3":
-		status := MakeSqliteQueryCheck(db)
-		return status
+		return MakeSqliteQueryCheck(db)
 	case "oracle":
-		status := MakeOracleDbQuery(db)
-		return status
+		return MakeOracleDbQuery(db)
 	case "mongodb":
-		status := MakeMongodbQueryCheck(db)
-		return status
+		return MakeMongodbQueryCheck(db)
 	case "couchbase":
-		status := MakeCouchDbQueryCheck(db)
-		return status
+		return MakeCouchDbQueryCheck(db)
 	case "dynamodb":
 		// call db driver
 	default:
 		log.Fatal("Db " + db.Type + " not supported")
 
 	}
-	return map[string]string{}
+	return service.ServiceCheck{}
 }
 
 func (db *Database) GetOrSetConnTimeOut() time.Duration {

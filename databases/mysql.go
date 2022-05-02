@@ -2,16 +2,16 @@ package databases
 
 import (
 	"database/sql"
-	"fmt"
+	"log"
 	"strconv"
+
+	"github.com/salemzii/go-watchdog/service"
 )
 
-func MakeMysqlDbQuery(db *Database) map[string]string {
+func MakeMysqlDbQuery(db *Database) service.ServiceCheck {
 	uri, err := db.DSNMysql()
 	if err != nil {
-		status := handleDberr("mysql", err)
-		fmt.Println(status)
-		return status
+		return service.HandleError("mysql", err)
 	}
 
 	if db.Uri_Only() {
@@ -20,32 +20,26 @@ func MakeMysqlDbQuery(db *Database) map[string]string {
 
 	Mysqldb, err := sql.Open("mysql", uri)
 	if err != nil {
-		status := handleDberr("mysql", err)
-		fmt.Println(status)
-		return status
+		return service.HandleError("mysql", err)
 	}
 	defer Mysqldb.Close()
 
 	res, err := Mysqldb.Exec("SELECT 1")
 	if err != nil {
-		status := handleDberr("mysql", err)
-		fmt.Println(status)
-		return status
+		return service.HandleError("mysql", err)
 	}
 
 	rows, err := res.RowsAffected()
 	if err != nil {
-		status := handleDberr("mysql", err)
-		fmt.Println(status)
-		return status
+		return service.HandleError("mysql", err)
 	}
 	status := map[string]string{
 		"service":       "mysql",
 		"status":        "ok",
 		"rows_affected": strconv.Itoa(int(rows)),
 	}
-	fmt.Println(status)
-	return status
+	log.Println(status)
+	return service.HandleSuccess("mysql", nil)
 }
 
 // https://golangbot.com/connect-create-db-mysql/

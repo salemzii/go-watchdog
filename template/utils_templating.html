@@ -4,24 +4,45 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Templating..</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Go-watchdog</title>
 </head>
 <body>
-    
-<h4>{{.Date}}</h4>
-<p>News Details: {{.Detail}}</p>
+    <div class="p-5 h-screen bg-gray-100">
+        <h1 class="text-xl mb-2">Go-watchdog</h1>
+        <!--PC view-->
+        <div class="overflow-auto rounded-lg shadow hidden md:block">
+          <table class="w-full">
+            <thead class="bg-gray-50 border-b-2 border-gray-200">
+            <tr>
+              <th class="p-3 text-sm font-semibold tracking-wide text-left">Service</th>
+              <th class="w-24 p-3 text-sm font-semibold tracking-wide text-left">Status</th>
+              <th class="w-24 p-3 text-sm font-semibold tracking-wide text-left">Error</th>
+            </tr>
+            </thead>
 
-<div>
-    {{range $element := .News}} 
-    {{if (eq $element.Title "first news")}}
-        <div style="border: 2px solid gray; margin-bottom: 2rem;">
-            <p>{{$element.Title}}</p>
-            <p>{{$element.Content}}</p>
+            
+              <tbody class="divide-y divide-gray-100">
+                {{range $st := .ServiceChecks}}
+                  <tr class="bg-white">
+                    <td class="p-3 text-sm text-gray-700 whitespace-nowrap">
+                      <a href="#" class="font-bold text-blue-500 hover:underline">{{$st.Service}}</a>
+                    </td>
+                    <td class="p-3 text-sm text-gray-700 whitespace-nowrap">
+                      {{$st.Status}}
+                    </td>
+                    <td class="p-3 text-sm text-gray-700 whitespace-nowrap">
+                        {{$st.Error}}
+                    </td>
+
+                  </tr>
+                {{end}}
+              </tbody>
+            
+
+          </table>
         </div>
-        {{end}}
-    {{end}}
-</div>
 
-
+      </div>
 </body>
 </html>

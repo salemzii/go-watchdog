@@ -1,13 +1,16 @@
 package caches
 
-import "github.com/bradfitz/gomemcache/memcache"
+import (
+	"github.com/bradfitz/gomemcache/memcache"
+	"github.com/salemzii/go-watchdog/service"
+)
 
-func MakeMemcachedCheck(c *Cache) map[string]string {
+func MakeMemcachedCheck(c *Cache) service.ServiceCheck {
 
 	cache := memcache.New(c.Addrs)
 
 	if err := cache.Ping(); err != nil {
-		return HandleCacheErr("memcached", err)
+		return service.HandleError("memcached", err)
 	}
-	return map[string]string{"status": "ok", "service": "memcached"}
+	return service.HandleSuccess("memcached", nil)
 }

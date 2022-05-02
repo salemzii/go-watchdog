@@ -2,16 +2,15 @@ package databases
 
 import (
 	"database/sql"
-	"fmt"
-	"strconv"
+	"log"
+
+	"github.com/salemzii/go-watchdog/service"
 )
 
-func MakePostgresDbQuery(db *Database) map[string]string {
+func MakePostgresDbQuery(db *Database) service.ServiceCheck {
 	uri, err := db.GetConnString()
 	if err != nil {
-		status := handleDberr("postgresql", err)
-		fmt.Println(status)
-		return status
+		return service.HandleError("postgresql", err)
 	}
 
 	if db.Uri_Only() {
@@ -20,30 +19,20 @@ func MakePostgresDbQuery(db *Database) map[string]string {
 
 	postgresDb, err := sql.Open("postgres", uri)
 	if err != nil {
-		status := handleDberr("postgresql", err)
-		fmt.Println(status)
-		return status
+		return service.HandleError("postgresql", err)
 	}
 
 	res, err := postgresDb.Exec("SELECT 1")
 	if err != nil {
-		status := handleDberr("postgresql", err)
-		fmt.Println(status)
-		return status
+		return service.HandleError("postgresql", err)
 	}
 
 	rows, err := res.RowsAffected()
+	log.Println(rows)
 	if err != nil {
-		status := handleDberr("postgresql", err)
-		fmt.Println(status)
-		return status
+		return service.HandleError("postgresql", err)
 	}
-	status := map[string]string{
-		"service":       "postgresql",
-		"status":        "ok",
-		"rows_affected": strconv.Itoa(int(rows)),
-	}
-	return status
+	return service.HandleSuccess("postgresql", nil)
 }
 
 // https://blog.logrocket.com/building-simple-app-go-postgresql/

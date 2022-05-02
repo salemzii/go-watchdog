@@ -1,37 +1,15 @@
 package utils
 
+import "github.com/salemzii/go-watchdog/service"
+
 var Config WatchdogConfig
 
 // go build -v *.go && ./main
 // sudo systemctl start mongod
 
-/*
-func init() {
-	folderPath, err := osext.ExecutableFolder()
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	workingDir := filepath.Dir(folderPath)
-	os.Chdir(workingDir)
-	config, err := os.Open("watchdogConfig.json")
-	if err != nil {
-		log.Println("Starting AutoReloader with config file .......")
-	}
-
-	defer config.Close()
-	configByte, err := ioutil.ReadAll(config)
-	if err != nil {
-		log.Println("Error loading AutoReloaderConfig.json")
-	}
-	json.Unmarshal(configByte, &Config)
-	fmt.Println(Config)
-}
-*/
-
-func GetDatabaseChecks() (checks []map[string]string, err error) {
+func GetDatabaseChecks() (checks []service.ServiceCheck, err error) {
 	arg := Config.Databases
-	allDbChecks := []map[string]string{}
+	allDbChecks := []service.ServiceCheck{}
 	for i := 0; i < len(arg); i++ {
 		status := arg[i].GetDbDriver()
 		allDbChecks = append(allDbChecks, status)
@@ -39,9 +17,9 @@ func GetDatabaseChecks() (checks []map[string]string, err error) {
 	return allDbChecks, nil
 }
 
-func GetCacheChecks() (checks []map[string]string, err error) {
+func GetCacheChecks() (checks []service.ServiceCheck, err error) {
 	arg := Config.Caches
-	allCacheChecks := []map[string]string{}
+	allCacheChecks := []service.ServiceCheck{}
 
 	for i := 0; i < len(arg); i++ {
 		status := arg[i].GetCacheDriver()
@@ -50,9 +28,9 @@ func GetCacheChecks() (checks []map[string]string, err error) {
 	return allCacheChecks, nil
 }
 
-func GetStorageChecks() (checks []map[string]string, err error) {
+func GetStorageChecks() (checks []service.ServiceCheck, err error) {
 	arg := Config.Storages
-	allCacheChecks := []map[string]string{}
+	allCacheChecks := []service.ServiceCheck{}
 
 	for i := 0; i < len(arg); i++ {
 		status := arg[i].GetStorageDriver()

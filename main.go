@@ -1,70 +1,69 @@
 package main
 
 import (
-	"fmt"
 	"html/template"
-	"net/http"
+	"log"
 	"os"
 	"time"
 
+	"github.com/gin-gonic/gin"
 	"github.com/salemzii/go-watchdog/app"
-	"github.com/salemzii/go-watchdog/storages"
+	"github.com/salemzii/go-watchdog/caches"
+	"github.com/salemzii/go-watchdog/databases"
+	"github.com/salemzii/go-watchdog/service"
+	storages "github.com/salemzii/go-watchdog/storages"
 	"github.com/salemzii/go-watchdog/utils"
 )
 
 func main() {
 
+	router := gin.Default()
+
 	watchDogConfig := utils.WatchdogConfig{
 
-		/*
-			Databases: []databases.Database{
+		Databases: []databases.Database{
 
-				{Type: "sqlite3", Name: "test2.db"},
-				{Type: "sqlite3", Name: "test.db"},
-				{Type: "mongodb", Name: "taskdb", Addrs: "127.0.0.1:27017"},
-				{Type: "postgresql", Name: "postgres", Addrs: "localhost", Username: "postgres", Password: "auth1234"},
+			{Type: "sqlite3", Name: "test2.db"},
+			{Type: "sqlite3", Name: "test.db"},
+			{Type: "mongodb", Name: "taskdb", Addrs: "127.0.0.1:27017"},
+			{Type: "postgresql", Name: "postgres", Addrs: "localhost", Username: "postgres", Password: "auth1234"},
 
-				{Type: "postgresql",
-					Name:     "tfgrwusb",
-					Addrs:    "queenie.db.elephantsql.com",
-					Password: "MwZ8sT4H0_8575ybn2yaTz3h3ImAlp40",
-					Username: "tfgrwusb"},
+			{Type: "postgresql",
+				Name:     "tfgrwusb",
+				Addrs:    "queenie.db.elephantsql.com",
+				Password: "MwZ8sT4H0_8575ybn2yaTz3h3ImAlp40",
+				Username: "tfgrwusb"},
 
-				{Type: "postgresql",
-					UriOnly: "postgres://tfgrwusb:MwZ8sT4H0_8575ybn2yaTz3h3ImAlp40@queenie.db.elephantsql.com/tfgrwusb",
-				},
-
-				{Type: "mongodb",
-					UriOnly: "mongodb+srv://salem:auth1234@cluster0.8qw1s.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"},
-
-				{Type: "couchbase",
-					Addrs:    "cb.lus1jnhsaeag2nl4.cloud.couchbase.com",
-					Username: "salemododa2@gmail.com", Password: "Auth1234#"},
+			{Type: "postgresql",
+				UriOnly: "postgres://tfgrwusb:MwZ8sT4H0_8575ybn2yaTz3h3ImAlp40@queenie.db.elephantsql.com/tfgrwusb",
 			},
 
-			Caches: []caches.Cache{
-				{Type: "memcached", Addrs: "localhost:11211"},
-				{Type: "redis", Addrs: "127.0.0.1:6379"},
-				{Type: "redis", Addrs: "redis-15719.c242.eu-west-1-2.ec2.cloud.redislabs.com:15719", Password: "38rKjb8yOD7YI2OodiAoFdrMZQTIBIYl"},
-			},
-		*/
+			{Type: "mongodb",
+				UriOnly: "mongodb+srv://salem:auth1234@cluster0.8qw1s.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"},
+
+			{Type: "couchbase",
+				Addrs:    "cb.lus1jnhsaeag2nl4.cloud.couchbase.com",
+				Username: "salemododa2@gmail.com", Password: "Auth1234#"},
+		},
+
+		Caches: []caches.Cache{
+			{Type: "memcached", Addrs: "localhost:11211"},
+			{Type: "redis", Addrs: "127.0.0.1:6379"},
+			{Type: "redis", Addrs: "redis-15719.c242.eu-west-1-2.ec2.cloud.redislabs.com:15719", Password: "38rKjb8yOD7YI2OodiAoFdrMZQTIBIYl"},
+		},
+
 		Storages: []storages.Storage{
+			{Type: "aws", Region: os.Getenv("REGION"), BUCKET: os.Getenv("BUCKET")},
 			{Type: "aws", Region: os.Getenv("REGION"), BUCKET: os.Getenv("BUCKET")},
 		},
 	}
 
 	utils.Register(&watchDogConfig)
-	fmt.Println(app.AllDbChecks())
-	fmt.Println(app.AllCacheChecks())
-	fmt.Print(app.AllStorageChecks())
 
-	/*
-		http.HandleFunc("/orders/", MyOrders)
-		fmt.Println(app.AllDbChecks())
-		log.Println("Starting server on port :8000")
-		log.Fatal(http.ListenAndServe(":8000", nil))
+	router.GET("/storages", lookup)
+	router.GET("/order", MyOrders)
 
-	*/
+	router.Run()
 }
 
 type Order struct {
@@ -78,7 +77,7 @@ type OrderLs struct {
 	Orders []Order
 }
 
-func MyOrders(wr http.ResponseWriter, req *http.Request) {
+func MyOrders(c *gin.Context) {
 	order1 := &Order{
 		Number:  1001,
 		Details: "Kring New Fit kitchen chair, couch + PU, brown",
@@ -100,7 +99,19 @@ func MyOrders(wr http.ResponseWriter, req *http.Request) {
 	par := OrderLs{Orders: []Order{*order1, *order2}}
 	t, _ := template.ParseFiles("template/index.html")
 
-	t.Execute(wr, par)
+	t.Execute(c.Writer, par)
+}
+
+func lookup(c *gin.Context) {
+	type ServiceCheckTemplate struct {
+		ServiceChecks []service.ServiceCheck `json:"service_checks"`
+	}
+	serviceChecks := app.GetServiceCheck(app.AllDbChecks(), app.AllCacheChecks(), app.AllStorageChecks())
+	par := ServiceCheckTemplate{ServiceChecks: serviceChecks}
+	log.Println(par)
+	t, _ := template.ParseFiles("template/utils_templating.html")
+
+	t.Execute(c.Writer, par)
 }
 
 // https://blog.logrocket.com/using-golang-templates/

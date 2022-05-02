@@ -2,18 +2,17 @@ package databases
 
 import (
 	"context"
-	"fmt"
 
+	"github.com/salemzii/go-watchdog/service"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-func MakeMongodbQueryCheck(db *Database) map[string]string {
+func MakeMongodbQueryCheck(db *Database) service.ServiceCheck {
 
 	uri, err := db.DSNMongoDb()
 	if err != nil {
-		status := handleDberr("mongodb", err)
-		return status
+		service.HandleError("mongodb", err)
 	}
 	if db.Uri_Only() {
 		uri = db.UriOnly
@@ -24,20 +23,14 @@ func MakeMongodbQueryCheck(db *Database) map[string]string {
 
 	client, err := mongo.Connect(ctx, options.Client().ApplyURI(uri))
 	if err != nil {
-		status := handleDberr("mongodb", err)
-		return status
+		service.HandleError("mongodb", err)
 	}
 
 	if err := client.Ping(context.TODO(), nil); err != nil {
-		status := handleDberr("mongodb", err)
-		return status
+		service.HandleError("mongodb", err)
 	}
 
-	status := map[string]string{
-		"status": "ok",
-	}
-	fmt.Println(status)
-	return status
+	return service.HandleSuccess("mongodb", nil)
 }
 
 //https://blog.logrocket.com/how-to-use-mongodb-with-go/
