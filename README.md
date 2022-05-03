@@ -9,6 +9,14 @@ Go-watchdog is pretty much loosely-coupled hence allowing developers the ease to
 
 
 ``` go
+	import (
+		app "github.com/salemzii/go-watchdog/app"
+		"github.com/salemzii/go-watchdog/caches"
+		"github.com/salemzii/go-watchdog/databases"
+		storages "github.com/salemzii/go-watchdog/storages"
+		"github.com/salemzii/go-watchdog/utils"
+	)
+
 	watchDogConfig := utils.WatchdogConfig{
 
 		Databases: []databases.Database{
