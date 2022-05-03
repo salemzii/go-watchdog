@@ -6,3 +6,40 @@ Go-watchdog is pretty much loosely-coupled hence allowing developers the ease to
 
 
 ## Setting up Go-watchdog
+
+
+``` go
+	watchDogConfig := utils.WatchdogConfig{
+
+		Databases: []databases.Database{
+
+			{Type: "postgresql",
+				Name:     "username",
+				Addrs:    "db.elephantsql.com",
+				Password: "password",
+				Username: "username"},
+
+			{Type: "postgresql",
+				UriOnly: "",
+			},
+
+			{Type: "mongodb",
+				UriOnly: "mongodb+srv://username:password@cluster0.8qw1s.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"},
+
+			{Type: "couchbase",
+				Addrs:    "",
+				Username: "", Password: ""},
+		},
+
+		Caches: []caches.Cache{
+			{Type: "redis", Addrs: "", Password: ""},
+		},
+
+		Storages: []storages.Storage{
+			{Type: "aws", Region: os.Getenv("REGION"), BUCKET: os.Getenv("BUCKET")},
+		},
+	}
+
+	utils.Register(&watchDogConfig)
+
+```
