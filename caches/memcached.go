@@ -10,7 +10,7 @@ func MakeMemcachedCheck(c *Cache) service.ServiceCheck {
 	cache := memcache.New(c.Addrs)
 
 	if err := cache.Ping(); err != nil {
-		return service.HandleError("memcached", err)
+		return *service.HandleError("memcached", err)
 	}
-	return service.HandleSuccess("memcached", nil)
+	return *service.HandleSuccess("memcached", nil)
 }

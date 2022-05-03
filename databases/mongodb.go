@@ -30,7 +30,7 @@ func MakeMongodbQueryCheck(db *Database) service.ServiceCheck {
 		service.HandleError("mongodb", err)
 	}
 
-	return service.HandleSuccess("mongodb", nil)
+	return *service.HandleSuccess("mongodb", nil)
 }
 
 //https://blog.logrocket.com/how-to-use-mongodb-with-go/

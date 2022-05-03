@@ -33,9 +33,9 @@ func ping(rdb *redis.Client) service.ServiceCheck {
 
 	status := rdb.Ping(ctx)
 	if status.Err() != nil {
-		return service.HandleError("redis", status.Err())
+		return *service.HandleError("redis", status.Err())
 	}
-	return service.HandleSuccess("redis", nil)
+	return *service.HandleSuccess("redis", nil)
 }
 
 func setItem() map[string]string {

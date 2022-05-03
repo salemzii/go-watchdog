@@ -7,17 +7,17 @@ var Config WatchdogConfig
 // go build -v *.go && ./main
 // sudo systemctl start mongod
 
-func GetDatabaseChecks() (checks []service.ServiceCheck, err error) {
+func GetDatabaseChecks() (checks *[]service.ServiceCheck, err error) {
 	arg := Config.Databases
 	allDbChecks := []service.ServiceCheck{}
 	for i := 0; i < len(arg); i++ {
 		status := arg[i].GetDbDriver()
 		allDbChecks = append(allDbChecks, status)
 	}
-	return allDbChecks, nil
+	return &allDbChecks, nil
 }
 
-func GetCacheChecks() (checks []service.ServiceCheck, err error) {
+func GetCacheChecks() (checks *[]service.ServiceCheck, err error) {
 	arg := Config.Caches
 	allCacheChecks := []service.ServiceCheck{}
 
@@ -25,10 +25,10 @@ func GetCacheChecks() (checks []service.ServiceCheck, err error) {
 		status := arg[i].GetCacheDriver()
 		allCacheChecks = append(allCacheChecks, status)
 	}
-	return allCacheChecks, nil
+	return &allCacheChecks, nil
 }
 
-func GetStorageChecks() (checks []service.ServiceCheck, err error) {
+func GetStorageChecks() (checks *[]service.ServiceCheck, err error) {
 	arg := Config.Storages
 	allCacheChecks := []service.ServiceCheck{}
 
@@ -36,5 +36,5 @@ func GetStorageChecks() (checks []service.ServiceCheck, err error) {
 		status := arg[i].GetStorageDriver()
 		allCacheChecks = append(allCacheChecks, status)
 	}
-	return allCacheChecks, nil
+	return &allCacheChecks, nil
 }

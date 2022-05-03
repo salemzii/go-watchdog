@@ -10,7 +10,7 @@ import (
 func MakePostgresDbQuery(db *Database) service.ServiceCheck {
 	uri, err := db.GetConnString()
 	if err != nil {
-		return service.HandleError("postgresql", err)
+		return *service.HandleError("postgresql", err)
 	}
 
 	if db.Uri_Only() {
@@ -19,20 +19,20 @@ func MakePostgresDbQuery(db *Database) service.ServiceCheck {
 
 	postgresDb, err := sql.Open("postgres", uri)
 	if err != nil {
-		return service.HandleError("postgresql", err)
+		return *service.HandleError("postgresql", err)
 	}
 
 	res, err := postgresDb.Exec("SELECT 1")
 	if err != nil {
-		return service.HandleError("postgresql", err)
+		return *service.HandleError("postgresql", err)
 	}
 
 	rows, err := res.RowsAffected()
 	log.Println(rows)
 	if err != nil {
-		return service.HandleError("postgresql", err)
+		return *service.HandleError("postgresql", err)
 	}
-	return service.HandleSuccess("postgresql", nil)
+	return *service.HandleSuccess("postgresql", nil)
 }
 
 // https://blog.logrocket.com/building-simple-app-go-postgresql/

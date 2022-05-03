@@ -7,7 +7,7 @@ import (
 	"github.com/salemzii/go-watchdog/utils"
 )
 
-func AllDbChecks() []service.ServiceCheck {
+func AllDbChecks() *[]service.ServiceCheck {
 	checks, err := utils.GetDatabaseChecks()
 	if err != nil {
 		log.Println(err)

@@ -11,7 +11,7 @@ import (
 func MakeMysqlDbQuery(db *Database) service.ServiceCheck {
 	uri, err := db.DSNMysql()
 	if err != nil {
-		return service.HandleError("mysql", err)
+		return *service.HandleError("mysql", err)
 	}
 
 	if db.Uri_Only() {
@@ -20,18 +20,18 @@ func MakeMysqlDbQuery(db *Database) service.ServiceCheck {
 
 	Mysqldb, err := sql.Open("mysql", uri)
 	if err != nil {
-		return service.HandleError("mysql", err)
+		return *service.HandleError("mysql", err)
 	}
 	defer Mysqldb.Close()
 
 	res, err := Mysqldb.Exec("SELECT 1")
 	if err != nil {
-		return service.HandleError("mysql", err)
+		return *service.HandleError("mysql", err)
 	}
 
 	rows, err := res.RowsAffected()
 	if err != nil {
-		return service.HandleError("mysql", err)
+		return *service.HandleError("mysql", err)
 	}
 	status := map[string]string{
 		"service":       "mysql",
@@ -39,7 +39,7 @@ func MakeMysqlDbQuery(db *Database) service.ServiceCheck {
 		"rows_affected": strconv.Itoa(int(rows)),
 	}
 	log.Println(status)
-	return service.HandleSuccess("mysql", nil)
+	return *service.HandleSuccess("mysql", nil)
 }
 
 // https://golangbot.com/connect-create-db-mysql/

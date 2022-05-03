@@ -7,7 +7,7 @@ import (
 	"github.com/salemzii/go-watchdog/utils"
 )
 
-func AllStorageChecks() []service.ServiceCheck {
+func AllStorageChecks() *[]service.ServiceCheck {
 	checks, err := utils.GetStorageChecks()
 	if err != nil {
 		log.Println(err)

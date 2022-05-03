@@ -49,7 +49,7 @@ func AwsStorageCheck(st *Storage) service.ServiceCheck {
 	file, filename, err := create_file()
 
 	if err != nil {
-		return service.HandleError("aws", err)
+		return *service.HandleError("aws", err)
 	}
 
 	defer file.Close()
@@ -61,9 +61,9 @@ func AwsStorageCheck(st *Storage) service.ServiceCheck {
 	})
 	if err != nil {
 		// Print the error and exit.
-		return service.HandleError("aws", err)
+		return *service.HandleError("aws", err)
 	}
 
 	fmt.Printf("Successfully uploaded %q to %q\n", filename, BUCKET)
-	return service.HandleSuccess("aws", err)
+	return *service.HandleSuccess("aws", err)
 }

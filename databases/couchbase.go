@@ -11,7 +11,7 @@ func MakeCouchDbQueryCheck(db *Database) service.ServiceCheck {
 	uri, err := db.DSNCouchbase()
 
 	if err != nil {
-		return service.HandleError("couchbase", err)
+		return *service.HandleError("couchbase", err)
 	}
 
 	cluster, err := gocb.Connect(uri, gocb.ClusterOptions{
@@ -24,12 +24,12 @@ func MakeCouchDbQueryCheck(db *Database) service.ServiceCheck {
 		},
 	})
 	if err != nil {
-		return service.HandleError("couchbase", err)
+		return *service.HandleError("couchbase", err)
 	}
 	bucket := cluster.Bucket("default")
 
 	r := bucket.Name()
 
 	log.Println(r)
-	return service.HandleSuccess("couchbase", nil)
+	return *service.HandleSuccess("couchbase", nil)
 }

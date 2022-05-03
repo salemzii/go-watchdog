@@ -28,9 +28,18 @@
                     <td class="p-3 text-sm text-gray-700 whitespace-nowrap">
                       <a href="#" class="font-bold text-blue-500 hover:underline">{{$st.Service}}</a>
                     </td>
+
+                    {{if (eq $st.Status  "Success")}}
                     <td class="p-3 text-sm text-gray-700 whitespace-nowrap">
-                      {{$st.Status}}
+                      <span
+                        class="p-1.5 text-xs font-medium uppercase tracking-wider text-green-800 bg-green-200 rounded-lg bg-opacity-50">{{$st.Status}}</span>
                     </td>
+                    {{else}}
+                    <td class="p-3 text-sm text-gray-700 whitespace-nowrap">
+                      <span
+                        class="p-1.5 text-xs font-medium uppercase tracking-wider text-green-800 bg-red-200 rounded-lg bg-opacity-50">{{$st.Status}}</span>
+                      </td>
+                    {{end}}
                     <td class="p-3 text-sm text-gray-700 whitespace-nowrap">
                         {{$st.Error}}
                     </td>

@@ -11,22 +11,22 @@ import (
 func MakeOracleDbQuery(db *Database) service.ServiceCheck {
 	uri, err := db.DSNOracle()
 	if err != nil {
-		return service.HandleError("oracledb", err)
+		return *service.HandleError("oracledb", err)
 	}
 	Oracledb, err := sql.Open("godror", uri)
 	if err != nil {
-		return service.HandleError("oracledb", err)
+		return *service.HandleError("oracledb", err)
 	}
 	defer Oracledb.Close()
 
 	res, err := Oracledb.Exec("SELECT 1")
 	if err != nil {
-		return service.HandleError("oracledb", err)
+		return *service.HandleError("oracledb", err)
 	}
 
 	rows, err := res.RowsAffected()
 	if err != nil {
-		return service.HandleError("oracledb", err)
+		return *service.HandleError("oracledb", err)
 	}
 	status := map[string]string{
 		"service":       "oracle",
@@ -34,7 +34,7 @@ func MakeOracleDbQuery(db *Database) service.ServiceCheck {
 		"rows_affected": strconv.Itoa(int(rows)),
 	}
 	fmt.Println(status)
-	return service.HandleSuccess("oracledb", nil)
+	return *service.HandleSuccess("oracledb", nil)
 }
 
 //https://blogs.oracle.com/developers/post/how-to-connect-a-go-program-to-oracle-database-using-godror

@@ -6,9 +6,9 @@ type ServiceCheck struct {
 	Error   string `json:"error"`
 }
 
-func HandleError(service string, err error) ServiceCheck {
-	return ServiceCheck{Service: service, Error: err.Error(), Status: "Failed"}
+func HandleError(service string, err error) *ServiceCheck {
+	return &ServiceCheck{Service: service, Error: err.Error(), Status: "Failed"}
 }
-func HandleSuccess(service string, err error) ServiceCheck {
-	return ServiceCheck{Service: service, Error: err.Error(), Status: "Success"}
+func HandleSuccess(service string, err error) *ServiceCheck {
+	return &ServiceCheck{Service: service, Error: "", Status: "Success"}
 }

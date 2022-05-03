@@ -2,15 +2,13 @@ package main
 
 import (
 	"html/template"
-	"log"
 	"os"
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/salemzii/go-watchdog/app"
+	app "github.com/salemzii/go-watchdog/app"
 	"github.com/salemzii/go-watchdog/caches"
 	"github.com/salemzii/go-watchdog/databases"
-	"github.com/salemzii/go-watchdog/service"
 	storages "github.com/salemzii/go-watchdog/storages"
 	"github.com/salemzii/go-watchdog/utils"
 )
@@ -60,7 +58,7 @@ func main() {
 
 	utils.Register(&watchDogConfig)
 
-	router.GET("/storages", lookup)
+	router.GET("/storages", app.GinLookUp)
 	router.GET("/order", MyOrders)
 
 	router.Run()
@@ -98,18 +96,6 @@ func MyOrders(c *gin.Context) {
 
 	par := OrderLs{Orders: []Order{*order1, *order2}}
 	t, _ := template.ParseFiles("template/index.html")
-
-	t.Execute(c.Writer, par)
-}
-
-func lookup(c *gin.Context) {
-	type ServiceCheckTemplate struct {
-		ServiceChecks []service.ServiceCheck `json:"service_checks"`
-	}
-	serviceChecks := app.GetServiceCheck(app.AllDbChecks(), app.AllCacheChecks(), app.AllStorageChecks())
-	par := ServiceCheckTemplate{ServiceChecks: serviceChecks}
-	log.Println(par)
-	t, _ := template.ParseFiles("template/utils_templating.html")
 
 	t.Execute(c.Writer, par)
 }
