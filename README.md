@@ -24,7 +24,7 @@ Go-watchdog is pretty much loosely-coupled hence allowing developers the ease to
 			},
 
 			{Type: "mongodb",
-				UriOnly: "mongodb+srv://username:password@cluster0.8qw1s.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"},
+				UriOnly: "mongodb+srv://username:password@dbURL"},
 
 			{Type: "couchbase",
 				Addrs:    "",
