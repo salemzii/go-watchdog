@@ -74,9 +74,11 @@ Usually you can register the config by passing it's memory address to the regist
 		
 	"utils.Register(&watchDogConfig)"
 
-## Preview
-
+## Preview Desktop view
 ![alt text](https://github.com/salemzii/go-watchdog/blob/main/watchdog.png?raw=true)
+
+## Preview Mobile View
+![alt text](https://github.com/salemzii/go-watchdog/blob/main/watchdogmobile.png?raw=true)
 
 ## Databases
 
