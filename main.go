@@ -24,30 +24,27 @@ func main() {
 			{Type: "sqlite3", Name: "test2.db"},
 			{Type: "sqlite3", Name: "test.db"},
 			{Type: "mongodb", Name: "taskdb", Addrs: "127.0.0.1:27017"},
-			{Type: "postgresql", Name: "postgres", Addrs: "localhost", Username: "postgres", Password: "auth1234"},
+			{Type: "sql-server", Username: "SA", Addrs: "127.0.0.1:1433",
+				Password: os.Getenv("SQLSERVERPSWD"), Name: "TestDb"},
+			{Type: "postgresql", Name: "postgres", Addrs: "localhost", Username: "postgres",
+				Password: os.Getenv("PG_LOCAL_PSWD")},
 
 			{Type: "postgresql",
-				Name:     "tfgrwusb",
-				Addrs:    "queenie.db.elephantsql.com",
-				Password: "MwZ8sT4H0_8575ybn2yaTz3h3ImAlp40",
-				Username: "tfgrwusb"},
-
-			{Type: "postgresql",
-				UriOnly: "postgres://tfgrwusb:MwZ8sT4H0_8575ybn2yaTz3h3ImAlp40@queenie.db.elephantsql.com/tfgrwusb",
+				UriOnly: os.Getenv("PG_URI"),
 			},
 
 			{Type: "mongodb",
-				UriOnly: "mongodb+srv://salem:auth1234@cluster0.8qw1s.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"},
+				UriOnly: os.Getenv("MONGO_URI")},
 
 			{Type: "couchbase",
-				Addrs:    "cb.lus1jnhsaeag2nl4.cloud.couchbase.com",
-				Username: "salemododa2@gmail.com", Password: "Auth1234#"},
+				Addrs:    os.Getenv("COUCHBASE_URL"),
+				Username: "salemododa2@gmail.com", Password: os.Getenv("COUCHBASE_PSWD")},
 		},
 
 		Caches: []caches.Cache{
 			{Type: "memcached", Addrs: "localhost:11211"},
 			{Type: "redis", Addrs: "127.0.0.1:6379"},
-			{Type: "redis", Addrs: "redis-15719.c242.eu-west-1-2.ec2.cloud.redislabs.com:15719", Password: "38rKjb8yOD7YI2OodiAoFdrMZQTIBIYl"},
+			{Type: "redis", Addrs: os.Getenv("REDIS_URI"), Password: os.Getenv("REDIS_PSWD")},
 		},
 
 		Storages: []storages.Storage{

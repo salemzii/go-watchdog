@@ -14,8 +14,12 @@ func GinLookUp(c *gin.Context) {
 	}
 	serviceChecks := GetServiceCheck(*AllDbChecks(), *AllCacheChecks(), *AllStorageChecks())
 	par := ServiceCheckTemplate{ServiceChecks: serviceChecks}
-	log.Println(par)
-	t, _ := template.ParseFiles("template/utils_templating.html")
 
-	t.Execute(c.Writer, par)
+	t, err := template.ParseFiles("template/utils_templating.html")
+
+	if err != nil {
+		log.Println(err)
+	}
+
+	t.Execute(c.Writer, &par)
 }

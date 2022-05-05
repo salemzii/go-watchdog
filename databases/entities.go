@@ -43,6 +43,10 @@ func (db *Database) GetConnString() (str string, err error) {
 	return connStr, nil
 }
 
+func (db *Database) DSNSqlServer() (str string, err error) {
+	connStr := fmt.Sprintf("sqlserver://%s:%s@%s?database=%s&connection+timeout=%v", db.Username, db.Password, db.Addrs, db.Name, db.GetOrSetConnTimeOut())
+	return connStr, nil
+}
 func (db *Database) DSNMysql() (str string, err error) {
 	connStr := fmt.Sprintf("%s:%s@tcp(%s)/%s", db.Username, db.Password, db.Addrs, db.Name)
 	return connStr, nil
@@ -84,6 +88,8 @@ func (db *Database) GetDbDriver() service.ServiceCheck {
 		return MakePostgresDbQuery(db)
 	case "sqlite3":
 		return MakeSqliteQueryCheck(db)
+	case "sql-server":
+		return MakeSqlServerQuery(db)
 	case "oracle":
 		return MakeOracleDbQuery(db)
 	case "mongodb":
