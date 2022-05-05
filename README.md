@@ -76,7 +76,7 @@ Usually you can register the config by passing it's memory address to the regist
 
 ## Preview
 
-![alt text](https://github.com/[salemzii]/[go-watchdog]/blob/[main]/watchdog.png?raw=true)
+![alt text](https://github.com/salemzii/go-watchdog/blob/main/watchdog.png?raw=true)
 
 ## Databases
 
