@@ -69,3 +69,31 @@
   </div>
 
 <!--Table body mobile-->
+
+
+
+
+<div class="bg-white space-y-3 p-4 rounded-lg shadow">
+  {{range $st := .ServiceChecks}}
+  <div class="flex items-center space-x-2 text-sm">
+    <div>
+      <a href="#" class="text-blue-500 font-bold hover:underline">{{$st.Service}</a>
+    </div>
+    <div class="text-gray-500">10/10/2021</div>
+    {{if (eq $st.Status  "Success")}}
+      <div>
+        <span
+          class="p-1.5 text-xs font-medium uppercase tracking-wider text-green-800 bg-yellow-200 rounded-lg bg-opacity-50">{{$st.Status}}</span>
+      </div>
+    {{else}}
+    <div>
+      <span
+        class="p-1.5 text-xs font-medium uppercase tracking-wider text-red-800 bg-yellow-200 rounded-lg bg-opacity-50">{{$st.Status}}</span>
+    </div>
+    {{end}}
+  </div>
+  <div class="text-sm text-gray-700">
+    {{$st.Error}}
+  </div>
+  {{end}}
+</div>

@@ -47,10 +47,43 @@
                   </tr>
                 {{end}}
               </tbody>
-            
-
           </table>
         </div>
+
+
+          <!--Mobile View-->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 md:hidden">
+            {{range $st := .ServiceChecks}}
+              <div class="bg-white space-y-3 p-4 rounded-lg shadow">
+                <div class="flex items-center space-x-2 text-sm">
+                  <div>
+                    <a href="#" class="text-blue-500 font-bold hover:underline">{{$st.Service}}</a>
+                  </div>
+                  <div class="text-gray-500"></div>
+                  {{if (eq $st.Status  "Success")}}
+                    <div>
+                      <span
+                        class="p-1.5 text-xs font-medium uppercase tracking-wider text-black-800 bg-green-200 rounded-lg bg-opacity-50">{{$st.Status}}</span>
+                    </div>
+                {{else}}
+                  <div>
+                    <span
+                      class="p-1.5 text-xs font-medium uppercase tracking-wider text-white-800 bg-red-200 rounded-lg bg-opacity-50">{{$st.Status}}</span>
+                  </div>
+                {{end}}
+                </div>
+                {{if (gt $st.Error "a")}}
+                  <div class="text-sm font-medium text-red">
+                    {{$st.Error}}
+                </div>
+                {{else}}
+                  <div class="text-sm font-medium text-green">
+                    {{$st.Service}} working fine.
+                  </div>
+              {{end}}
+            </div>
+          {{end}}
+          </div>
       </div>
 </body>
 </html>
