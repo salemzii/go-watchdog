@@ -11,21 +11,5 @@ func GetServiceCheck(res ...[]service.ServiceCheck) []service.ServiceCheck {
 			serviceLs = append(serviceLs, v)
 		}
 	}
-	/*
-		var sc utils.ServiceCheck
-			for _, item := range res {
-				for _, v := range item {
-					if _, ok := v["error"]; ok {
-						sc.Error = v["err"]
-						sc.Service = v["service"]
-						sc.Status = v["status"]
-					}
-					sc.Service = v["service"]
-					sc.Status = v["status"]
-
-					serviceLs = append(serviceLs, sc)
-				}
-			}
-	*/
 	return serviceLs
 }
