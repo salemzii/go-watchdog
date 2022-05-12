@@ -53,7 +53,7 @@ func main() {
 		*/
 		MsgQueues: []messagequeues.MsgQueue{
 			{Type: "rabbitmq", Addrs: "localhost:5672", Username: "guest", Password: "guest"},
-			{Type: "rabbitmq", UriOnly: "amqps://prpdzbql:CbhEnmHnJapvsuxGxDA88qV7oqkBZxlC@bonobo.rmq.cloudamqp.com/prpdzbql"},
+			{Type: "rabbitmq", UriOnly: ""},
 		},
 	}
 
