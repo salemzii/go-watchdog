@@ -2,14 +2,11 @@ package main
 
 import (
 	"html/template"
-	"os"
 	"time"
 
 	"github.com/gin-gonic/gin"
 	app "github.com/salemzii/go-watchdog/app"
-	"github.com/salemzii/go-watchdog/caches"
-	"github.com/salemzii/go-watchdog/databases"
-	storages "github.com/salemzii/go-watchdog/storages"
+	"github.com/salemzii/go-watchdog/messagequeues"
 	"github.com/salemzii/go-watchdog/utils"
 )
 
@@ -19,37 +16,44 @@ func main() {
 
 	watchDogConfig := utils.WatchdogConfig{
 
-		Databases: []databases.Database{
+		/*
+			Databases: []databases.Database{
 
-			{Type: "sqlite3", Name: "test2.db"},
-			{Type: "sqlite3", Name: "test.db"},
-			{Type: "mongodb", Name: "taskdb", Addrs: "127.0.0.1:27017"},
-			{Type: "sql-server", Username: "SA", Addrs: "127.0.0.1:1433",
-				Password: os.Getenv("SQLSERVERPSWD"), Name: "TestDb"},
-			{Type: "postgresql", Name: "postgres", Addrs: "localhost", Username: "postgres",
-				Password: os.Getenv("PG_LOCAL_PSWD")},
+				{Type: "sqlite3", Name: "test2.db"},
+				{Type: "sqlite3", Name: "test.db"},
+				{Type: "mongodb", Name: "taskdb", Addrs: "127.0.0.1:27017"},
+				{Type: "sql-server", Username: "SA", Addrs: "127.0.0.1:1433",
+					Password: os.Getenv("SQLSERVERPSWD"), Name: "TestDb"},
+				{Type: "postgresql", Name: "postgres", Addrs: "localhost", Username: "postgres",
+					Password: os.Getenv("PG_LOCAL_PSWD")},
 
-			{Type: "postgresql",
-				UriOnly: os.Getenv("PG_URI"),
+				{Type: "postgresql",
+					UriOnly: os.Getenv("PG_URI"),
+				},
+
+				{Type: "mongodb",
+					UriOnly: os.Getenv("MONGO_URI")},
+
+				{Type: "couchbase",
+					Addrs:    os.Getenv("COUCHBASE_URL"),
+					Username: "salemododa2@gmail.com", Password: os.Getenv("COUCHBASE_PSWD")},
 			},
 
-			{Type: "mongodb",
-				UriOnly: os.Getenv("MONGO_URI")},
+			Caches: []caches.Cache{
+				{Type: "memcached", Addrs: "localhost:11211"},
+				{Type: "redis", Addrs: "127.0.0.1:6379"},
+				{Type: "redis", Addrs: os.Getenv("REDIS_URI"), Password: os.Getenv("REDIS_PSWD")},
+			},
 
-			{Type: "couchbase",
-				Addrs:    os.Getenv("COUCHBASE_URL"),
-				Username: "salemododa2@gmail.com", Password: os.Getenv("COUCHBASE_PSWD")},
-		},
+			Storages: []storages.Storage{
+				{Type: "aws", Region: os.Getenv("REGION"), BUCKET: os.Getenv("BUCKET")},
+				{Type: "aws", Region: os.Getenv("REGION"), BUCKET: os.Getenv("BUCKET")},
+			},
 
-		Caches: []caches.Cache{
-			{Type: "memcached", Addrs: "localhost:11211"},
-			{Type: "redis", Addrs: "127.0.0.1:6379"},
-			{Type: "redis", Addrs: os.Getenv("REDIS_URI"), Password: os.Getenv("REDIS_PSWD")},
-		},
-
-		Storages: []storages.Storage{
-			{Type: "aws", Region: os.Getenv("REGION"), BUCKET: os.Getenv("BUCKET")},
-			{Type: "aws", Region: os.Getenv("REGION"), BUCKET: os.Getenv("BUCKET")},
+		*/
+		MsgQueues: []messagequeues.MsgQueue{
+			{Type: "rabbitmq", Addrs: "localhost:5672", Username: "guest", Password: "guest"},
+			{Type: "rabbitmq", UriOnly: "amqps://prpdzbql:CbhEnmHnJapvsuxGxDA88qV7oqkBZxlC@bonobo.rmq.cloudamqp.com/prpdzbql"},
 		},
 	}
 

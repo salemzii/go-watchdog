@@ -12,7 +12,7 @@ func GinLookUp(c *gin.Context) {
 	type ServiceCheckTemplate struct {
 		ServiceChecks []service.ServiceCheck `json:"service_checks"`
 	}
-	serviceChecks := GetServiceCheck(*AllDbChecks(), *AllCacheChecks(), *AllStorageChecks())
+	serviceChecks := GetServiceCheck(*AllDbChecks(), *AllCacheChecks(), *AllStorageChecks(), *AllMqChecks())
 	par := ServiceCheckTemplate{ServiceChecks: serviceChecks}
 
 	t, err := template.ParseFiles("template/utils_templating.html")

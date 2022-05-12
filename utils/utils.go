@@ -7,6 +7,23 @@ var Config WatchdogConfig
 // go build -v *.go && ./main
 // sudo systemctl start mongod
 
+
+func GetMQChecks()(checks *[]service.ServiceCheck, err error){
+
+	arg := Config.MsgQueues
+	allMqChecks := []service.ServiceCheck{}
+
+	for i := 0; i < len(arg); i++ {
+
+		status := arg[i].GetMqDriver()
+		allMqChecks = append(allMqChecks, status)
+	}
+
+
+	return &allMqChecks, nil
+}
+
+
 func GetDatabaseChecks() (checks *[]service.ServiceCheck, err error) {
 	arg := Config.Databases
 	allDbChecks := []service.ServiceCheck{}

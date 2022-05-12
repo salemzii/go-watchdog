@@ -4,6 +4,7 @@ import (
 	"github.com/salemzii/go-watchdog/caches"
 	"github.com/salemzii/go-watchdog/databases"
 	"github.com/salemzii/go-watchdog/storages"
+	"github.com/salemzii/go-watchdog/messagequeues"
 )
 
 type WatchdogConfig struct {
@@ -11,6 +12,8 @@ type WatchdogConfig struct {
 	Databases []databases.Database `json:"databases"`
 	Caches    []caches.Cache       `json:"caches"`
 	Storages  []storages.Storage   `json:"storages"`
+
+	MsgQueues []messagequeues.MsgQueue `json:"message_queues"`
 }
 
 func (wConfig *WatchdogConfig) HandleDbChecks() []databases.Database {
