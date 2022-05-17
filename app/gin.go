@@ -23,3 +23,12 @@ func GinLookUp(c *gin.Context) {
 
 	t.Execute(c.Writer, &par)
 }
+
+func RunGinserver() {
+
+	router := gin.Default()
+
+	router.GET("/watchdog", GinLookUp)
+
+	router.Run()
+}

@@ -1,18 +1,12 @@
 package main
 
 import (
-	"html/template"
-	"time"
-
-	"github.com/gin-gonic/gin"
-	app "github.com/salemzii/go-watchdog/app"
+	"github.com/salemzii/go-watchdog/app"
 	"github.com/salemzii/go-watchdog/messagequeues"
 	"github.com/salemzii/go-watchdog/utils"
 )
 
 func main() {
-
-	router := gin.Default()
 
 	watchDogConfig := utils.WatchdogConfig{
 
@@ -52,6 +46,7 @@ func main() {
 
 		*/
 		MsgQueues: []messagequeues.MsgQueue{
+			{Type: "awsmq", UriOnly: "amqps://b-4de5a854-a3c3-43e3-9f3d-d8fe82060e84-1.mq.us-east-1.amazonaws.com:5671"},
 			{Type: "rabbitmq", Addrs: "localhost:5672", Username: "guest", Password: "guest"},
 			{Type: "rabbitmq", UriOnly: "amqps://prpdzbql:CbhEnmHnJapvsuxGxDA88qV7oqkBZxlC@bonobo.rmq.cloudamqp.com/prpdzbql"},
 		},
@@ -59,46 +54,6 @@ func main() {
 
 	utils.Register(&watchDogConfig)
 
-	router.GET("/storages", app.GinLookUp)
-	router.GET("/order", MyOrders)
+	app.RunGinserver()
 
-	router.Run()
 }
-
-type Order struct {
-	Number  uint
-	Details string
-	Status  string
-	Date    time.Time
-	Total   float64
-}
-type OrderLs struct {
-	Orders []Order
-}
-
-func MyOrders(c *gin.Context) {
-	order1 := &Order{
-		Number:  1001,
-		Details: "Kring New Fit kitchen chair, couch + PU, brown",
-		Status:  "Delivered",
-		Date: time.Date(2022, time.April,
-			11, 21, 34, 01, 0, time.UTC),
-		Total: 125.00,
-	}
-
-	order2 := &Order{
-		Number:  1004,
-		Details: "Sky blue, T-shirt, lg",
-		Status:  "Processing",
-		Date: time.Date(2022, time.April,
-			11, 27, 34, 01, 0, time.UTC),
-		Total: 22.00,
-	}
-
-	par := OrderLs{Orders: []Order{*order1, *order2}}
-	t, _ := template.ParseFiles("template/index.html")
-
-	t.Execute(c.Writer, par)
-}
-
-// https://blog.logrocket.com/using-golang-templates/

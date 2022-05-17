@@ -27,13 +27,21 @@ func (mq *MsgQueue) RabbitmqDsn() string {
 	return fmt.Sprintf("amqp://%s:%s@%s/%s", mq.Username, mq.Password, mq.Addrs, mq.Password)
 }
 
+func (mq *MsgQueue) AwsMqDsn() string {
+	return fmt.Sprintf("amqp+ssl://%s", mq.Addrs)
+}
+
+//amqp+ssl://b-4de5a854-a3c3-43e3-9f3d-d8fe82060e84-1.mq.us-east-1.amazonaws.com:5671
+
 func (mq *MsgQueue) GetMqDriver() service.ServiceCheck {
 
 	switch strings.ToLower(mq.Type) {
 	case "rabbitmq":
 		return MakeRabbitmqQuery(mq)
-	case "kafka":
-		//return MakeKafkaQuery(mq)
+	case "activemq":
+		return MakeActivemqQuery(mq)
+	case "awsmq":
+		return MakeAwsMqQuery(mq)
 	}
 
 	return service.ServiceCheck{}
