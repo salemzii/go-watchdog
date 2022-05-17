@@ -48,7 +48,7 @@ func main() {
 		MsgQueues: []messagequeues.MsgQueue{
 			{Type: "awsmq", UriOnly: "amqps://b-4de5a854-a3c3-43e3-9f3d-d8fe82060e84-1.mq.us-east-1.amazonaws.com:5671"},
 			{Type: "rabbitmq", Addrs: "localhost:5672", Username: "guest", Password: "guest"},
-			{Type: "rabbitmq", UriOnly: "amqps://prpdzbql:CbhEnmHnJapvsuxGxDA88qV7oqkBZxlC@bonobo.rmq.cloudamqp.com/prpdzbql"},
+			{Type: "rabbitmq", UriOnly: ""},
 		},
 	}
 
