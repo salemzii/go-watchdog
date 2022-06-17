@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Go-watchdog</title>
+</head>
+<body>
+    <div class="p-5 h-screen bg-gray-100">
+        <h1 class="text-xl mb-2">Your orders</h1>
+        <!--PC view-->
+        <div class="overflow-auto rounded-lg shadow hidden md:block">
+          <table class="w-full">
+            <thead class="bg-gray-50 border-b-2 border-gray-200">
+            <tr>
+              <th class="w-20 p-3 text-sm font-semibold tracking-wide text-left">No.</th>
+              <th class="p-3 text-sm font-semibold tracking-wide text-left">Details</th>
+              <th class="w-24 p-3 text-sm font-semibold tracking-wide text-left">Status</th>
+              <th class="w-24 p-3 text-sm font-semibold tracking-wide text-left">Date</th>
+              <th class="w-32 p-3 text-sm font-semibold tracking-wide text-left">Total</th>
+            </tr>
+            </thead>
+
+            
+              <tbody class="divide-y divide-gray-100">
+                {{range $order := .Orders}}
+                  <tr class="bg-white">
+                    <td class="p-3 text-sm text-gray-700 whitespace-nowrap">
+                      <a href="#" class="font-bold text-blue-500 hover:underline">{{$order.Number}}</a>
+                    </td>
+                    <td class="p-3 text-sm text-gray-700 whitespace-nowrap">
+                      {{$order.Details}}
+                    </td>
+                    <td class="p-3 text-sm text-gray-700 whitespace-nowrap">
+                    <span
+                      class="p-1.5 text-xs font-medium uppercase tracking-wider text-green-800 bg-green-200 rounded-lg bg-opacity-50">{{$order.Status}}</span>
+                    </td>
+                    <td class="p-3 text-sm text-gray-700 whitespace-nowrap">{{$order.Date}}</td>
+                    <td class="p-3 text-sm text-gray-700 whitespace-nowrap">{{$order.Total}}</td>
+                  </tr>
+                {{end}}
+              </tbody>
+            
+
+          </table>
+        </div>
+
+
+     
+
+        <!--Mobile View-->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 md:hidden">
+            {{range $order := .Orders}}
+              <div class="bg-white space-y-3 p-4 rounded-lg shadow">
+                <div class="flex items-center space-x-2 text-sm">
+                  <div>
+                    <a href="#" class="text-blue-500 font-bold hover:underline">{{$order.Number}}</a>
+                  </div>
+                  <div class="text-gray-500">{{$order.Date}}</div>
+                  <div>
+                    <span
+                      class="p-1.5 text-xs font-medium uppercase tracking-wider text-green-800 bg-green-200 rounded-lg bg-opacity-50">{{$order.Status}}</span>
+                  </div>
+                </div>
+                <div class="text-sm text-gray-700">
+                  {{$order.Details}}
+                </div>
+                <div class="text-sm font-medium text-black">
+                  ${{$order.Total}}
+              </div>
+            </div>
+          {{end}}
+          </div>
+
+
+      </div>
+</body>
+</html>
